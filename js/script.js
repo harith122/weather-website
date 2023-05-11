@@ -29,19 +29,42 @@ let weather = {
     },
     getLocation: function() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                fetch(
-                    "https://api.openweathermap.org/data/2.5/weather?lat=" 
-                    + latitude
-                    + "&lon="
-                    + longitude
-                    + "&units=metric&appid=" 
-                    + this.apikey
-                )
-                .then((Response) => Response.json())
-                .then((data) => this.displayWeather(data));
+            navigator.permissions.query({ name: "geolocation" }).then((result) => {
+                if (result.state === "granted") {
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        fetch(
+                            "https://api.openweathermap.org/data/2.5/weather?lat=" 
+                            + latitude
+                            + "&lon="
+                            + longitude
+                            + "&units=metric&appid=" 
+                            + this.apikey
+                        )
+                        .then((Response) => Response.json())
+                        .then((data) => this.displayWeather(data));
+                    });
+                } else if (result.state === "prompt") {
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        fetch(
+                            "https://api.openweathermap.org/data/2.5/weather?lat=" 
+                            + latitude
+                            + "&lon="
+                            + longitude
+                            + "&units=metric&appid=" 
+                            + this.apikey
+                        )
+                        .then((Response) => Response.json())
+                        .then((data) => this.displayWeather(data));
+                    }, () => {
+                        alert("Please allow location access to see weather information for your location.");
+                    });
+                } else {
+                    alert("Location access has been denied. To see weather information for your location, please allow location access.");
+                }
             });
         } else {
             alert("Geolocation is not supported by this browser.");
@@ -59,4 +82,4 @@ document.querySelector(".search-bar").addEventListener("keyup", function (event)
     }
 });
 
-weather.getLocation();  // Call the function to get the user's location by default
+weather.getLocation();  //
