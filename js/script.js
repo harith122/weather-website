@@ -82,4 +82,4 @@ document.querySelector(".search-bar").addEventListener("keyup", function (event)
     }
 });
 
-weather.getLocation();  //
+weather.getLocation();  //call weather location
